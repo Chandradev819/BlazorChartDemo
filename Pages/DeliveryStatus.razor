@@ -1,0 +1,40 @@
+﻿@page "/delivery"
+@inject IJSRuntime JsRuntime
+@using Newtonsoft.Json
+
+<PageTitle>Delivery Status last 48</PageTitle>
+<h1>Delivery Status last 48</h1>
+
+<div style="border-radius: 305px;  border: 2px solid #73AD21;padding:35px;  width: 500px;  height: 350px; ">
+    <div style="margin:10px" id="regions_div"></div>
+</div>
+
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var data = chartData;
+            var jsonData = JsonConvert.SerializeObject(data);
+            await JsRuntime.InvokeAsync<Task>("drawRegionsMap", jsonData);
+        }
+    }
+    public class GeoChartData
+    {
+        public string Country { get; set; }
+        public int TotalDelivery { get; set; }
+    }
+
+    List<GeoChartData> chartData = new List<GeoChartData>
+{
+    new GeoChartData { Country = "India", TotalDelivery = 1000 },
+    new GeoChartData { Country = "United Kingdom", TotalDelivery = 900 },
+    new GeoChartData { Country = "United States", TotalDelivery = 800 },
+    new GeoChartData { Country = "Canada", TotalDelivery = 700 },
+    new GeoChartData { Country = "Brazil", TotalDelivery = 900 },
+    new GeoChartData { Country = "Australia", TotalDelivery = 1200 },
+    new GeoChartData { Country = "South Africa", TotalDelivery = 3000 }
+};
+
+}

@@ -1,0 +1,35 @@
+﻿@page "/fundspend"
+@inject IJSRuntime JsRuntime
+@using Newtonsoft.Json
+
+<PageTitle>Fund VS Spend</PageTitle>
+<h1>fund VS spend</h1>
+
+
+<div style="margin:10px" id="div_drawfundedspend"></div>
+
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var data = chartData;
+            var jsonData = JsonConvert.SerializeObject(data);
+            await JsRuntime.InvokeAsync<Task>("drawfundedspend", jsonData);
+        }
+    }
+
+    public class FundedSpendData
+    {
+        public string Category { get; set; }
+        public int Invoice { get; set; }
+        public int Approved { get; set; }
+        public string Rejected { get; set; }
+    }
+
+    List<FundedSpendData> chartData = new List<FundedSpendData>
+    {
+        new FundedSpendData { Category = "Total", Invoice = 28, Approved = 19, Rejected = "14" }
+    };
+}

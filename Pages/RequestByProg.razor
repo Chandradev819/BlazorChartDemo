@@ -1,0 +1,96 @@
+﻿@page "/"
+@inject IJSRuntime JsRuntime
+@using Newtonsoft.Json
+
+<PageTitle>Monthly Request by Program</PageTitle>
+
+
+<div class="row">
+    <div class="col">
+        <div id="chart_div"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Program1</th>
+                    <th>Program2</th>
+                    <th>Program3</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in objMonthlyRequestByProg.data)
+                {
+                    <tr>
+                        <td>@item.Month</td>
+                        <td>@item.Program1</td>
+                        <td>@item.Program2</td>
+                        <td>@item.Program3</td>
+                        <td>@item.Total</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+    }
+
+        .summary-table th,
+        .summary-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .summary-table th {
+            background-color: #f5f5f5;
+        }
+</style>
+
+
+@code {
+    LoadMonthlyRequestByProg objMonthlyRequestByProg = new LoadMonthlyRequestByProg();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var data = objMonthlyRequestByProg.data;
+            var jsonData = JsonConvert.SerializeObject(data);
+            await JsRuntime.InvokeAsync<Task>("drawMonthlyRequestByProgram", jsonData);
+        }
+    }
+    public class MonthlyRequestByProg
+    {
+        public int Program1 { get; set; }
+        public int Program2 { get; set; }
+        public int Program3 { get; set; }
+        public int Total { get; set; }
+        public string Month { get; set; }
+    }
+    public class LoadMonthlyRequestByProg
+    {
+        public List<MonthlyRequestByProg> data
+        {
+            get
+            {
+                return new List<MonthlyRequestByProg> {
+                      new MonthlyRequestByProg {Month="Jan", Program1=938,Program2=522,Program3= 998, Total=200 },
+                      new MonthlyRequestByProg {Month="Feb", Program1=100,Program2=200,Program3=300, Total=1300 },
+                      new MonthlyRequestByProg {Month="March", Program1=136,Program2=691,Program3=1026, Total=400},
+                      new MonthlyRequestByProg {Month="April", Program1=140,Program2=791,Program3=1026, Total=500},
+                      new MonthlyRequestByProg {Month="May", Program1=166,Program2=891,Program3=1026, Total=600},
+                };
+            }
+        }
+
+    }
+}
